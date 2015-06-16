@@ -3,11 +3,13 @@
 
 class BoardDrawer
 {
-	const Board board;
+	const Board& board;
+
+	void DrawBoard() const;
+	void DrawWallStraightSeg(bool vertical) const;
+	void DrawWallEdgeSeg(int x, int y) const;
+	void DrawPacman() const;
 public:
 	explicit BoardDrawer(const Board& board);
-	void DrawBoard() const;
-	void DrawWallStraightSeg(const int x, const int y) const;
-	void DrawWallEdgeSeg(const int x, const int y) const;
-	void DrawPacman() const;
+	void Draw() const;
 };

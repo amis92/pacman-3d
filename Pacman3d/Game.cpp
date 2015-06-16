@@ -1,20 +1,19 @@
 ﻿#include "Game.h"
 #include "glut.h"
+#include "BoardDrawer.h"
+
+const Board Game::board;
 
 void Game::SetAmbientLighting()
 {
-	glEnable(GL_LIGHTING);
-
-	auto amb = 0.5f;
-	GLfloat global_ambient[] = { amb, amb, amb, 0.3 };
+	const auto amb = 0.5f;
+	GLfloat global_ambient[] = { amb, amb, amb, 1.0 };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 }
 
 void Game::PointLight(const float x, const float y, const float z,
 	const float amb, const float diff, const float spec, const GLenum light)
 {
-	glEnable(GL_LIGHTING);
-
 	GLfloat light_ambient[] = { amb, amb, amb, 1.0 };
 	GLfloat light_diffuse[] = { diff, diff, diff, 1.0 };
 	GLfloat light_specular[] = { spec, spec, spec, 1.0 };
@@ -50,39 +49,10 @@ void Game::Init(int* argcp, char** argv)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
-	auto a = 
-		"^------------>^---------->^-"
-		"|............||............|"
-		"|.^-->.^--->.||.^--->.^-->.|"
-		"|x|  |.|   |.||.|   |.|  |x|"
-		"|.<--v.<---v.<v.<---v.<--v.|"
-		"|..........................|"
-		"|.^-->.^>.^------>.^>.^-->.|"
-		"|.<--v.||.<-->^--v.||.<--v.|"
-		"|......||....||....||......|"
-		"<---->.|<--> || ^--v|.^----v"
-		"     |.|^--v <v <-->|.|     "
-		"     |.||          ||.|     "
-		"     |.|| ^--  --> ||.|     "
-		" ----v.<v |      | <v.<---- "
-		"r     .   |      |   .     l"
-		" ---->.^> |      | ^>.^---- "
-		"     |.|| <------v ||.|     "
-		"     |.||          ||.|     "
-		"     |.|| ^------> ||.|     "
-		"^----v.<v <-->^--v <v.<---->"
-		"|............||............|"
-		"|.^-->.^--->.||.^--->.^-->.|"
-		"|.<->|.<---v.<v.<---v.|^-v.|"
-		"|x..||................||..x|"
-		"<->.||.^>.^------>.^>.||.^-v"
-		"^-v.<v.||.<-->^--v.||.<v.<->"
-		"|......||....||....||......|"
-		"|.^----v<-->.||.^--v<---->.|"
-		"|.<--------v.<v.<--------v.|"
-		"|..........................|"
-		"<--------------------------v";
+
+	glEnable(GL_LIGHTING);
 	SetAmbientLighting();
+	PointLight(-10, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
 }
 
 void Game::Display()
@@ -91,11 +61,13 @@ void Game::Display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (frame_no < 360) frame_no++; else frame_no = 0;
 	glMatrixMode(GL_MODELVIEW);
-	GLfloat AmbientLight[] = {1.0, 1.0, 1.0, 0.0};
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, AmbientLight);
-	GLfloat LightPosition[] = {0, 0, 10, 0};
-	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
-	// TODO displayObjects(frame_no);
+	{
+		glPushMatrix();
+		gluLookAt(0., 5., 40., 0., 0., 0., 0., 1., 0.);
+		BoardDrawer drawer(board);
+		drawer.Draw();
+		glPopMatrix();
+	}
 	glFlush();
 	glutSwapBuffers();
 }
@@ -115,7 +87,7 @@ void Game::Reshape(int width, int height)
 		auto const aspect = width < height
 			                    ? double(height) / double(width)
 			                    : double(width) / double(height);
-		gluPerspective(65.0, aspect, 4.0, 150.0);
+		gluPerspective(65.0, double(width) / double(height), 4.0, 150.0);
 		glMatrixMode(GL_MODELVIEW);
 	}
 }

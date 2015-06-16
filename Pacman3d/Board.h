@@ -7,6 +7,6 @@ class Board
 	BoardCell Cells[BoardLayout::Height][BoardLayout::Width];
 
 public:
-	explicit Board();
+	Board();
 	const BoardCell& GetCell(int x, int y) const;
 };

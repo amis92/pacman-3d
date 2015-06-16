@@ -2,10 +2,12 @@
 
 #include <Windows.h>
 #include <GL/gl.h>
+#include "Board.h"
 
 
 class Game
 {
+	static const Board board;
 	static void SetAmbientLighting();
 	static void PointLight(const float x, const float y, const float z,
 		const float amb, const float diff, const float spec, const GLenum light);

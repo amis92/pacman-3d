@@ -1,4 +1,5 @@
 ﻿#include "Board.h"
+#include "ErrorCodes.h"
 
 Board::Board()
 	: Cells()
@@ -10,10 +11,14 @@ Board::Board()
 			Cells[i][j] = BoardLayout::AsciiBoard[i][j];
 		}
 	}
-	const auto& x = GetCell(0, 0);
 }
 
 const BoardCell& Board::GetCell(int x, int y) const
 {
+	if (x < 0 || x >= BoardLayout::Width ||
+		y < 0 || y >= BoardLayout::Height)
+	{
+		throw PacmanException(OutOfBoundsError);
+	}
 	return Cells[y][x];
 }
