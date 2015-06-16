@@ -77,11 +77,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BoardDrawer.cpp" />
+    <ClCompile Include="BoardCell.cpp" />
+    <ClCompile Include="BoardLayout.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardDrawer.h" />
+    <ClInclude Include="BoardCell.h" />
+    <ClInclude Include="BoardLayout.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="glut.h" />
   </ItemGroup>
