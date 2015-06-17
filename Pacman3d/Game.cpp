@@ -1,24 +1,29 @@
 ﻿#include "Game.h"
 #include "glut.h"
 #include "BoardDrawer.h"
+#include "TextureLoader.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+GLuint Game::textures[1];
 
 const Board Game::board;
 
 void Game::SetAmbientLighting()
 {
 	const auto amb = 0.5f;
-	GLfloat global_ambient[] = { amb, amb, amb, 1.0 };
+	GLfloat global_ambient[] = {amb, amb, amb, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 }
 
 void Game::PointLight(const float x, const float y, const float z,
-	const float amb, const float diff, const float spec, const GLenum light)
+                      const float amb, const float diff, const float spec, const GLenum light)
 {
-	GLfloat light_ambient[] = { amb, amb, amb, 1.0 };
-	GLfloat light_diffuse[] = { diff, diff, diff, 1.0 };
-	GLfloat light_specular[] = { spec, spec, spec, 1.0 };
+	GLfloat light_ambient[] = {amb, amb, amb, 1.0};
+	GLfloat light_diffuse[] = {diff, diff, diff, 1.0};
+	GLfloat light_specular[] = {spec, spec, spec, 1.0};
 
-	GLfloat light_position[] = { x, y, z, 0.0 };
+	GLfloat light_position[] = {x, y, z, 0.0};
 
 	glLightfv(light, GL_AMBIENT, light_ambient);
 	glLightfv(light, GL_DIFFUSE, light_diffuse);
@@ -26,6 +31,11 @@ void Game::PointLight(const float x, const float y, const float z,
 	glLightfv(light, GL_POSITION, light_position);
 
 	glEnable(light); //enable the light after setting the properties
+}
+
+void Game::LoadTextures()
+{
+	textures[0] = TextureLoader::LoadRawTex("img/test.bmp", 256, 256);
 }
 
 void Game::Init(int* argcp, char** argv)
@@ -53,6 +63,8 @@ void Game::Init(int* argcp, char** argv)
 	glEnable(GL_LIGHTING);
 	SetAmbientLighting();
 	PointLight(-10, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
+
+	LoadTextures();
 }
 
 void Game::Display()
@@ -63,13 +75,19 @@ void Game::Display()
 	glMatrixMode(GL_MODELVIEW);
 	{
 		glPushMatrix();
-		gluLookAt(0., 5., 40., 0., 0., 0., 0., 1., 0.);
-		BoardDrawer drawer(board);
-		drawer.Draw();
+		auto arc = double(frame_no) / 360.0 * M_PI;
+		auto camz = 30.f * cos(arc);
+		auto camx = 30.f * sin(arc);
+		auto camy = 8.f;
+		gluLookAt(camx, camy, camz, 0., 0., 0., 0., 1., 0.);
+
+		BoardDrawer drawer(board, textures);
+		drawer.Draw(frame_no);
 		glPopMatrix();
 	}
 	glFlush();
 	glutSwapBuffers();
+	Sleep(10);
 }
 
 void Game::RunMainLoop()

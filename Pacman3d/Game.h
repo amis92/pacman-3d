@@ -7,12 +7,17 @@
 
 class Game
 {
+public:
+	static const unsigned int TexturesSize = 1;
+	const double AmbientLightingValue = 0.5;
+private:
+	static GLuint textures[TexturesSize];
 	static const Board board;
 	static void SetAmbientLighting();
 	static void PointLight(const float x, const float y, const float z,
 		const float amb, const float diff, const float spec, const GLenum light);
+	static void LoadTextures();
 public:
-	const double AmbientLightingValue = 0.5;
 	static void Init(int* argcp, char** argv);
 	static void Display();
 	static void RunMainLoop();

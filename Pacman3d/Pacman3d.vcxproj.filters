@@ -33,6 +33,12 @@
     <ClCompile Include="BoardCell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glut.h">
@@ -56,5 +62,46 @@
     <ClInclude Include="ErrorCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImageLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\bg2.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\bg3.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_blue.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_brown.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_green.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_lblue.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_purple.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_red.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_wall.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\block_yellow.raw">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="img\venus.raw">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
