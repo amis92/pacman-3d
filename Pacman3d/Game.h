@@ -8,16 +8,19 @@
 class Game
 {
 public:
-	static const unsigned int TexturesSize = 1;
+	static const unsigned int TexturesSize = 2;
 	const double AmbientLightingValue = 0.5;
 private:
+	static double cameraArc;
+	static double cameraRadius;
 	static GLuint textures[TexturesSize];
 	static const Board board;
 	static void SetAmbientLighting();
 	static void PointLight(const float x, const float y, const float z,
 		const float amb, const float diff, const float spec, const GLenum light);
 	static void LoadTextures();
-	static void OrbitCamera(int frameNo);
+	static void PositionCamera();
+	static void RecalculateCameraArc(int frameNo);
 public:
 	static void Init(int* argcp, char** argv);
 	static void Display();

@@ -2,23 +2,28 @@
 
 #include <stdio.h>
 #include <GL/glu.h>
+#include "imageloader.h"
 
-GLuint TextureLoader::LoadRawTex(const char* filename, int width, int height)
+Image* TextureLoader::LoadRaw(const char* filename, int width, int height)
 {
-	GLuint textureId;
-	unsigned char* data;
 	FILE* file = nullptr;
 
 	// open texture data
 	fopen_s(&file, filename, "rb");
-	if (file == nullptr) return 0;
+	if (file == nullptr) return nullptr;
 
 	// allocate buffer
-	data = static_cast<unsigned char*>(malloc(width * height * 4));
+	auto pixels = new char[width * height * 4];
 
 	// read texture data
-	fread(data, width * height * 4, 1, file);
+	fread(pixels, width * height * 4, 1, file);
 	fclose(file);
+	return new Image(pixels, width, height);
+}
+
+GLuint TextureLoader::BindTex()
+{
+	GLuint textureId;
 
 	// allocate a texture name
 	glGenTextures(1, &textureId);
@@ -42,10 +47,25 @@ GLuint TextureLoader::LoadRawTex(const char* filename, int width, int height)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	return textureId;
+}
+
+GLuint TextureLoader::LoadBmpTex(const char* filename)
+{
+	auto* img = loadBMP(filename);
+	auto textureId = BindTex();
 	// build our texture mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 4, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	auto result = gluBuild2DMipmaps(GL_TEXTURE_2D, 4, img->width, img->height, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
+	delete img;
+	return textureId;
+}
 
-	free(data);
-
+GLuint TextureLoader::LoadRawTex(const char* filename, int width, int height)
+{
+	auto* img = LoadRaw(filename, width, height);
+	auto textureId = BindTex();
+	// build our texture mipmaps
+	auto result = gluBuild2DMipmaps(GL_TEXTURE_2D, 4, img->width, img->height, GL_RGBA, GL_UNSIGNED_BYTE, img->pixels);
+	delete img;
 	return textureId;
 }

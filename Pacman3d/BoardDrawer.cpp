@@ -72,16 +72,17 @@ void BoardDrawer::DrawBoard() const
 void BoardDrawer::DrawWallStraightSeg(bool vertical) const
 {
 	glPushMatrix();
-	//glRotatef(30, 0.f, 0.5f, 1.f);
-	glTranslatef(0.f, 8.f, 2.f);
-	glScalef(4.f, 4.f, 4.f);
+	glTranslatef(0.f, 5.f, 5.f);
+	glRotatef(-20, 1.f, 0.f, 0.f);
+	auto scale = 5.;
+	glScaled(scale, scale, scale);
 
 
-	GLfloat diffuse[] = { 0.3, 0.3, 0.3, 1.0 };
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+	//GLfloat diffuse[] = { 0.5, 0.5, 1., 1.0 };
+	//glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glBegin(GL_QUADS);
 
 	//front face

@@ -5,9 +5,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-GLuint Game::textures[1];
+GLuint Game::textures[TexturesSize];
 
 const Board Game::board;
+double Game::cameraArc = 0;
+double Game::cameraRadius = 20;
 
 void Game::SetAmbientLighting()
 {
@@ -35,18 +37,23 @@ void Game::PointLight(const float x, const float y, const float z,
 
 void Game::LoadTextures()
 {
-	textures[0] = TextureLoader::LoadRawTex("img/block_wall.raw", 256, 256);
+	textures[1] = TextureLoader::LoadBmpTex("img/test.bmp");
+	textures[0] = TextureLoader::LoadRawTex("img/block_lblue.raw", 256, 256);
 }
 
-void Game::OrbitCamera(int frameNo)
+void Game::PositionCamera()
+{
+	auto camz = cameraRadius * cos(cameraArc);
+	auto camx = cameraRadius * sin(cameraArc);
+	auto camy = 1.f;
+	gluLookAt(camx, camy, camz, 0., 0., 0., 0., 1., 0.);
+}
+
+void Game::RecalculateCameraArc(int frameNo)
 {
 	auto period = double(frameNo) / 360.0;
 	auto zeroOneZeroSin = sin(period * M_PI * 2);
-	auto arc = zeroOneZeroSin * M_PI / 4;
-	auto camz = 30.f * cos(arc);
-	auto camx = 30.f * sin(arc);
-	auto camy = 8.f;
-	gluLookAt(camx, camy, camz, 0., 0., 0., 0., 1., 0.);
+	cameraArc = zeroOneZeroSin * M_PI / 4;
 }
 
 void Game::Init(int* argcp, char** argv)
@@ -87,7 +94,8 @@ void Game::Display()
 	glLoadIdentity();
 	{
 		glPushMatrix();
-		OrbitCamera(frameNo);
+		RecalculateCameraArc(frameNo);
+		PositionCamera();
 		PointLight(-3, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
 		BoardDrawer drawer(board, textures);
 		drawer.Draw(frameNo);
