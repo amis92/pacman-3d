@@ -17,6 +17,7 @@ private:
 	static void PointLight(const float x, const float y, const float z,
 		const float amb, const float diff, const float spec, const GLenum light);
 	static void LoadTextures();
+	static void OrbitCamera(int frameNo);
 public:
 	static void Init(int* argcp, char** argv);
 	static void Display();

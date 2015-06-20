@@ -11,7 +11,7 @@ const Board Game::board;
 
 void Game::SetAmbientLighting()
 {
-	const auto amb = 0.5f;
+	const auto amb = 1.f;
 	GLfloat global_ambient[] = {amb, amb, amb, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 }
@@ -35,7 +35,18 @@ void Game::PointLight(const float x, const float y, const float z,
 
 void Game::LoadTextures()
 {
-	textures[0] = TextureLoader::LoadRawTex("img/test.bmp", 256, 256);
+	textures[0] = TextureLoader::LoadRawTex("img/block_wall.raw", 256, 256);
+}
+
+void Game::OrbitCamera(int frameNo)
+{
+	auto period = double(frameNo) / 360.0;
+	auto zeroOneZeroSin = sin(period * M_PI * 2);
+	auto arc = zeroOneZeroSin * M_PI / 4;
+	auto camz = 30.f * cos(arc);
+	auto camx = 30.f * sin(arc);
+	auto camy = 8.f;
+	gluLookAt(camx, camy, camz, 0., 0., 0., 0., 1., 0.);
 }
 
 void Game::Init(int* argcp, char** argv)
@@ -62,27 +73,24 @@ void Game::Init(int* argcp, char** argv)
 
 	glEnable(GL_LIGHTING);
 	SetAmbientLighting();
-	PointLight(-10, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
+	PointLight(-10, 5, 30, 0.7, 1.0, 1.0, GL_LIGHT0);
 
 	LoadTextures();
 }
 
 void Game::Display()
 {
-	static auto frame_no = 0;
+	static auto frameNo = 0;
+	if (frameNo < 360) frameNo++; else frameNo = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (frame_no < 360) frame_no++; else frame_no = 0;
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	{
 		glPushMatrix();
-		auto arc = double(frame_no) / 360.0 * M_PI;
-		auto camz = 30.f * cos(arc);
-		auto camx = 30.f * sin(arc);
-		auto camy = 8.f;
-		gluLookAt(camx, camy, camz, 0., 0., 0., 0., 1., 0.);
-
+		OrbitCamera(frameNo);
+		PointLight(-3, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
 		BoardDrawer drawer(board, textures);
-		drawer.Draw(frame_no);
+		drawer.Draw(frameNo);
 		glPopMatrix();
 	}
 	glFlush();

@@ -72,7 +72,7 @@ void BoardDrawer::DrawBoard() const
 void BoardDrawer::DrawWallStraightSeg(bool vertical) const
 {
 	glPushMatrix();
-	glRotatef(30, 0.f, 0.5f, 1.f);
+	//glRotatef(30, 0.f, 0.5f, 1.f);
 	glTranslatef(0.f, 8.f, 2.f);
 	glScalef(4.f, 4.f, 4.f);
 
