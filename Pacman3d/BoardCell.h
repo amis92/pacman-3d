@@ -2,6 +2,7 @@
 
 enum ItemType
 {
+	Void,
 	Floor,
 	Wall,
 	Tunnel,

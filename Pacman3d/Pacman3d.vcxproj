@@ -80,6 +80,7 @@
     <ClCompile Include="BoardDrawer.cpp" />
     <ClCompile Include="BoardCell.cpp" />
     <ClCompile Include="BoardLayout.cpp" />
+    <ClCompile Include="CubeVerticesDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="main.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="BoardDrawer.h" />
     <ClInclude Include="BoardCell.h" />
     <ClInclude Include="BoardLayout.h" />
+    <ClInclude Include="CubeVerticesDrawer.h" />
     <ClInclude Include="ErrorCodes.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="glut.h" />
@@ -97,8 +99,6 @@
     <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\bg2.raw" />
-    <None Include="img\bg3.raw" />
     <None Include="img\block_blue.raw" />
     <None Include="img\block_brown.raw" />
     <None Include="img\block_green.raw" />
@@ -107,7 +107,9 @@
     <None Include="img\block_red.raw" />
     <None Include="img\block_wall.raw" />
     <None Include="img\block_yellow.raw" />
-    <None Include="img\venus.raw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="img\test.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

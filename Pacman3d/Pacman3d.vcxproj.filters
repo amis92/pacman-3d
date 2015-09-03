@@ -39,6 +39,9 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CubeVerticesDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glut.h">
@@ -68,14 +71,11 @@
     <ClInclude Include="TextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CubeVerticesDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\bg2.raw">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="img\bg3.raw">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="img\block_blue.raw">
       <Filter>Resource Files</Filter>
     </None>
@@ -100,8 +100,10 @@
     <None Include="img\block_yellow.raw">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="img\venus.raw">
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="img\test.bmp">
       <Filter>Resource Files</Filter>
-    </None>
+    </Image>
   </ItemGroup>
 </Project>

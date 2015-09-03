@@ -4,9 +4,9 @@
 Board::Board()
 	: Cells()
 {
-	for (auto i = 0; i < BoardLayout::Height; ++i)
+	for (auto i = 0; i < YLength; ++i)
 	{
-		for (auto j = 0; j < BoardLayout::Width; ++j)
+		for (auto j = 0; j < XLength; ++j)
 		{
 			Cells[i][j] = BoardLayout::AsciiBoard[i][j];
 		}
@@ -15,8 +15,8 @@ Board::Board()
 
 const BoardCell& Board::GetCell(int x, int y) const
 {
-	if (x < 0 || x >= BoardLayout::Width ||
-		y < 0 || y >= BoardLayout::Height)
+	if (x < 0 || x >= XLength ||
+		y < 0 || y >= YLength)
 	{
 		throw PacmanException(OutOfBoundsError);
 	}

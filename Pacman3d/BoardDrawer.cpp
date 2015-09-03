@@ -4,6 +4,7 @@
 #include <GL/GL.h>
 #include "glut.h"
 #include "Game.h"
+#include "CubeVerticesDrawer.h"
 
 static const auto BoardWidth = BoardLayout::Width;
 static const auto BoardHeight = BoardLayout::Height;
@@ -32,7 +33,15 @@ static const GLfloat NormalsRear[] = {0.f, 0.f, -1.f};
    7: RTR
    8: RTL
 */
-
+static const GLfloat zAxis90degRotationMatrix[] = {
+	/*1st column*/0., -1, 0., 0.,/*2nd column*/ 1., 0., 0., 0.,
+	/*3rd column*/ 0., 0., 1., 0., /*4th column*/ 0., 0., 0., 1.};
+static const GLfloat zAxis180degRotationMatrix[] = {
+	/*1st column*/-1., 0., 0., 0.,/*2nd column*/ 0., -1., 0., 0.,
+	/*3rd column*/ 0., 0., 1., 0., /*4th column*/ 0., 0., 0., 1.};
+static const GLfloat zAxis270degRotationMatrix[] = {
+	/*1st column*/0., 1, 0., 0.,/*2nd column*/ -1., 0., 0., 0.,
+	/*3rd column*/ 0., 0., 1., 0., /*4th column*/ 0., 0., 0., 1.};
 static const float VertFTL[] = {-0.5, 0.5, 0.5};
 static const float VertFTR[] = {0.5, 0.5, 0.5};
 static const float VertFBR[] = {0.5, -0.5, 0.5};
@@ -43,10 +52,10 @@ static const float VertRTR[] = {0.5, 0.5, -0.5};
 static const float VertRBR[] = {0.5, -0.5, -0.5};
 static const float VertRBL[] = {-0.5, -0.5, -0.5};
 
-static const float VertBL[] = { 0.0f, 0.0f };
-static const float VertBR[] = { 1.0f, 0.0f };
-static const float VertTR[] = { 1.0f, 1.0f };
-static const float VertTL[] = { 0.0f, 1.0f };
+static const float VertBL[] = {0.0f, 0.0f};
+static const float VertBR[] = {1.0f, 0.0f};
+static const float VertTR[] = {1.0f, 1.0f};
+static const float VertTL[] = {0.0f, 1.0f};
 
 BoardDrawer::BoardDrawer(const Board& board, GLuint textures[Game::TexturesSize])
 	: board(board)
@@ -62,109 +71,226 @@ void BoardDrawer::Draw(int frameNo) const
 	DrawBoard();
 }
 
-void BoardDrawer::DrawBoard() const
-{
-	//glTranslatef(float(BoardWidth) / 2.0f, float(BoardHeight) / 2.0f, 0.0f);
-	DrawWallStraightSeg(true);
-	DrawPacman();
-}
-
-void BoardDrawer::DrawWallStraightSeg(bool vertical) const
+void BoardDrawer::DrawFloorTexture(const int floorTextureIndex) const
 {
 	glPushMatrix();
-	glTranslatef(0.f, 5.f, 5.f);
-	glRotatef(-20, 1.f, 0.f, 0.f);
-	auto scale = 5.;
-	glScaled(scale, scale, scale);
-
-
-	//GLfloat diffuse[] = { 0.5, 0.5, 1., 1.0 };
-	//glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glBindTexture(GL_TEXTURE_2D, textures[floorTextureIndex]);
 	glBegin(GL_QUADS);
 
-	//front face
-	glNormal3fv(NormalsFront);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertFBL);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertFBR);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertFTR);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertFTL);
-
 	//rear face
-	glNormal3fv(NormalsRear);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertRBR);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertRBL);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertRTL);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertRTR);
-
-	//top face
-	glNormal3fv(NormalsTop);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertFTL);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertFTR);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertRTR);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertRTL);
-
-	//bottom face
-	glNormal3fv(NormalsBottom);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertRBL);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertRBR);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertFBR);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertFBL);
-
-	//left face
-	glNormal3fv(NormalsLeft);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertRBL);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertFBL);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertFTL);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertRTL);
-
-	//right face
-	glNormal3fv(NormalsRight);
-	glTexCoord2fv(VertBL);
-	glVertex3fv(VertFBR);
-	glTexCoord2fv(VertBR);
-	glVertex3fv(VertRBR);
-	glTexCoord2fv(VertTR);
-	glVertex3fv(VertRTR);
-	glTexCoord2fv(VertTL);
-	glVertex3fv(VertFTR);
+	glNormal3fv(NormalsFront);
+	CubeVerticesDrawer::DrawRearVertices(false);
 
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void BoardDrawer::DrawWallEdgeSeg(int x, int y) const
+void BoardDrawer::DrawFloor(const BoardCell& boardCell) const
 {
+	DrawFloorTexture(Game::FloorTextureIndex);
+}
+
+void BoardDrawer::DrawWall(const BoardCell& boardCell) const
+{
+	DrawFloorTexture(Game::WallFloorTextureIndex);
+	switch (boardCell.GetWallType())
+	{
+	case Horizontal: DrawWallStraightSeg(false);
+		break;
+	case Vertical: DrawWallStraightSeg(true);
+		break;
+	case Edge: DrawWallEdgeSeg(boardCell.GetWallEdgeType());
+		break;
+	default: break;
+	}
+}
+
+void BoardDrawer::DrawBoardCell(const BoardCell& boardCell) const
+{
+	glPushMatrix();
+	switch (boardCell.GetType())
+	{
+	case Void: break;
+	case GhostDoor: //TODO
+	case Floor: DrawFloor(boardCell);
+		break;
+	case Wall: DrawWall(boardCell);
+		break;
+	case Tunnel: break;
+	default: break;
+	}
+	glPopMatrix();
+}
+
+void BoardDrawer::DrawBoard() const
+{
+	glPushMatrix();
+
+	GLfloat diffuse[] = {0.7, 0.7, 0.7, 1.0};
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
+	glTranslatef(-float(Board::XLength) / 2, float(Board::YLength) / 2 - 1, 0.f);
+	for (auto x = 0; x < Board::XLength; x++)
+	{
+		glPushMatrix();
+		glTranslatef(1.f * float(x), 0.f, 0.f);
+		for (auto y = 0; y < Board::YLength; y++)
+		{
+			glPushMatrix();
+			glTranslatef(0.f, -1.f * float(y), 0.f);
+			DrawBoardCell(board.GetCell(x, y));
+			glPopMatrix();
+		}
+		glPopMatrix();
+	}
+	DrawPacman();
+	glPopMatrix();
+}
+
+void BoardDrawer::DrawWallStraightSeg(bool vertical) const
+{
+	glPushMatrix();
+	glScalef(vertical ? 1.0 : 0.5, vertical ? 0.5 : 1.0, 1.0);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[Game::WallTextureIndex]);
+	glBegin(GL_QUADS);
+
+	CubeVerticesDrawer::DrawFrontVertices(true);
+	CubeVerticesDrawer::DrawRearVertices(true);
+	CubeVerticesDrawer::DrawLeftVertices(true);
+	CubeVerticesDrawer::DrawRightVertices(true);
+	CubeVerticesDrawer::DrawTopVertices(true);
+	CubeVerticesDrawer::DrawBottomVertices(true);
+
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+}
+
+void BoardDrawer::DrawWallEdgeSeg(const WallEdgeType wallEdgeType) const
+{
+	//drawing an upper-left edge:
+	/*
+	    ______
+	   /  ___/|
+      /__/|  ||
+	  | | |  ||
+	  | | |__|/
+	  |_|/
+
+	*/
+
+	glPushMatrix();
+	switch (wallEdgeType)
+	{
+	case UpperLeft: break;
+	case UpperRight: glMultMatrixf(zAxis90degRotationMatrix);
+		break;
+	case LowerRight: glMultMatrixf(zAxis180degRotationMatrix);
+		break;
+	case LowerLeft: glMultMatrixf(zAxis270degRotationMatrix);
+		break;
+	default: break;
+	}
+	glTranslatef(0.25, -0.25, 0.);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textures[Game::WallTextureIndex]);
+
+	//top+left full walls
+	glPushMatrix();
+	{
+		glTranslatef(-0.125, 0.125, 0.);
+		glScalef(0.75, 0.75, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawTopVertices(true);
+		CubeVerticesDrawer::DrawLeftVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	//front+back
+	glPushMatrix();
+	{
+		glTranslatef(0.125, 0.25, 0.);
+		glScalef(0.25, 0.5, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawFrontVertices(true);
+		CubeVerticesDrawer::DrawRearVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(-0.25, 0.25, 0.);
+		glScalef(0.5, 0.5, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawFrontVertices(true);
+		CubeVerticesDrawer::DrawRearVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(-0.25, -0.125, 0.);
+		glScalef(0.5, 0.25, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawFrontVertices(true);
+		CubeVerticesDrawer::DrawRearVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	//bottom
+	glPushMatrix();
+	{
+		glTranslatef(-0.25, 0.25, 0.);
+		glScalef(0.5, 1., 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawBottomVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(0.125, 0.5, 0.);
+		glScalef(0.25, 1., 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawBottomVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	//right
+	glPushMatrix();
+	{
+		glTranslatef(-0.25, 0.25, 0.);
+		glScalef(1., 0.5, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawRightVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	{
+		glTranslatef(-0.5, -0.125, 0.);
+		glScalef(1., 0.25, 1.);
+		glBegin(GL_QUADS);
+		CubeVerticesDrawer::DrawRightVertices(true);
+		glEnd();
+	}
+	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 }
 
 void BoardDrawer::DrawPacman() const
 {
 	glPushMatrix();
+	glTranslatef(15, -15, 0);
 	GLfloat diffuse[] = {0.7, 0.7, 0.0, 1.0};
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-	glutSolidSphere(3.0, 24, 10);
+	glutSolidSphere(.5, 24, 10);
 	glPopMatrix();
 }

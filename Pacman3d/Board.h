@@ -4,7 +4,11 @@
 
 class Board
 {
-	BoardCell Cells[BoardLayout::Height][BoardLayout::Width];
+public:
+	static const int XLength = BoardLayout::Width - 1 /*for string-closing \0*/;
+	static const int YLength = BoardLayout::Height;
+private:
+	BoardCell Cells[YLength][XLength];
 
 public:
 	Board();

@@ -9,7 +9,8 @@ public:
 	static const char AsciiWallEdgeUpperRight = '>';
 	static const char AsciiWallEdgeLowerRight = 'v';
 	static const char AsciiWallEdgeLowerLeft = '<';
-	static const char AsciiEmpty = ' ';
+	static const char AsciiVoid = ' ';
+	static const char AsciiEmpty = 'o';
 	static const char AsciiBait = '.';
 	static const char AsciiBaitSpecial = '#';
 	static const char AsciiTunnelRightDoor = 'r';

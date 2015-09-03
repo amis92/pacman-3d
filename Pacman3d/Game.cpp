@@ -9,11 +9,12 @@ GLuint Game::textures[TexturesSize];
 
 const Board Game::board;
 double Game::cameraArc = 0;
-double Game::cameraRadius = 20;
+double Game::cameraRadius = 30;
+double const Game::maxCameraArc = M_PI / 12;
 
 void Game::SetAmbientLighting()
 {
-	const auto amb = 1.f;
+	const auto amb = 0.8f;
 	GLfloat global_ambient[] = {amb, amb, amb, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 }
@@ -37,8 +38,10 @@ void Game::PointLight(const float x, const float y, const float z,
 
 void Game::LoadTextures()
 {
-	textures[1] = TextureLoader::LoadBmpTex("img/test.bmp");
-	textures[0] = TextureLoader::LoadRawTex("img/block_lblue.raw", 256, 256);
+	textures[TestTextureIndex] = TextureLoader::LoadBmpTex("img/test.bmp");
+	textures[FloorTextureIndex] = TextureLoader::LoadRawTex("img/block_lblue.raw", 256, 256);
+	textures[WallTextureIndex] = TextureLoader::LoadRawTex("img/block_wall.raw", 256, 256);
+	textures[WallFloorTextureIndex] = TextureLoader::LoadRawTex("img/block_brown.raw", 256, 256);
 }
 
 void Game::PositionCamera()
@@ -53,7 +56,7 @@ void Game::RecalculateCameraArc(int frameNo)
 {
 	auto period = double(frameNo) / 360.0;
 	auto zeroOneZeroSin = sin(period * M_PI * 2);
-	cameraArc = zeroOneZeroSin * M_PI / 4;
+	cameraArc = zeroOneZeroSin * maxCameraArc;
 }
 
 void Game::Init(int* argcp, char** argv)
@@ -80,7 +83,6 @@ void Game::Init(int* argcp, char** argv)
 
 	glEnable(GL_LIGHTING);
 	SetAmbientLighting();
-	PointLight(-10, 5, 30, 0.7, 1.0, 1.0, GL_LIGHT0);
 
 	LoadTextures();
 }
@@ -96,7 +98,7 @@ void Game::Display()
 		glPushMatrix();
 		RecalculateCameraArc(frameNo);
 		PositionCamera();
-		PointLight(-3, 5, 30, 0.2, 1.0, 1.0, GL_LIGHT0);
+		PointLight(-30, 30, 30, 0.2, 1.0, 0.0, GL_LIGHT0);
 		BoardDrawer drawer(board, textures);
 		drawer.Draw(frameNo);
 		glPopMatrix();

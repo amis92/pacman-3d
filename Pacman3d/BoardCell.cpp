@@ -5,6 +5,8 @@ ItemType BoardCell::GetItemType(const char c)
 {
 	switch (c)
 	{
+	case BoardLayout::AsciiVoid:
+		return Void;
 	case BoardLayout::AsciiBait:
 	case BoardLayout::AsciiBaitSpecial:
 	case BoardLayout::AsciiEmpty:
