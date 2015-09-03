@@ -288,7 +288,7 @@ void BoardDrawer::DrawWallEdgeSeg(const WallEdgeType wallEdgeType) const
 void BoardDrawer::DrawPacman() const
 {
 	glPushMatrix();
-	glTranslatef(15, -15, 0);
+	glTranslatef(board.GetXPacmanOffset(), board.GetYPacmanOffset(), 0);
 	GLfloat diffuse[] = {0.7, 0.7, 0.0, 1.0};
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 	glutSolidSphere(.5, 24, 10);

@@ -4,6 +4,10 @@
 Board::Board()
 	: Cells()
 {
+	xPacmanOffset = 14.5;
+	yPacmanOffset = -24;
+	xPacmanDirection = -1;
+	yPacmanDirection = 0;
 	for (auto i = 0; i < YLength; ++i)
 	{
 		for (auto j = 0; j < XLength; ++j)
@@ -21,4 +25,24 @@ const BoardCell& Board::GetCell(int x, int y) const
 		throw PacmanException(OutOfBoundsError);
 	}
 	return Cells[y][x];
+}
+
+double Board::GetXPacmanOffset() const
+{
+	return xPacmanOffset;
+}
+
+double Board::GetYPacmanOffset() const
+{
+	return yPacmanOffset;
+}
+
+double Board::GetXPacmanDirection() const
+{
+	return xPacmanDirection;
+}
+
+double Board::GetYPacmanDirection() const
+{
+	return yPacmanDirection;
 }

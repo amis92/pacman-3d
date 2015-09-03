@@ -9,8 +9,14 @@ public:
 	static const int YLength = BoardLayout::Height;
 private:
 	BoardCell Cells[YLength][XLength];
+	double xPacmanOffset, yPacmanOffset;
+	int xPacmanDirection, yPacmanDirection;
 
 public:
 	Board();
 	const BoardCell& GetCell(int x, int y) const;
+	double GetXPacmanOffset() const;
+	double GetYPacmanOffset() const;
+	double GetXPacmanDirection() const;
+	double GetYPacmanDirection() const;
 };
