@@ -22,13 +22,15 @@ const BoardCell& Board::GetNextCell(int moveOffset, int xOffset, int yOffset, in
 		[xOffset / upScaleFactor + (xDirection > 0 ? 1 : 0)];
 }
 
-Board::Board()
+Board::Board(int initialScore)
 	: Cells()
 {
+	score = initialScore;
 	xPacmanOffset = 1450;
 	yPacmanOffset = 2400;
 	xPacmanDirection = xPacmanFutureDirection = -1;
 	yPacmanDirection = yPacmanFutureDirection = 0;
+	newDirectionSteps = 0;
 	for (auto i = 0; i < YLength; ++i)
 	{
 		for (auto j = 0; j < XLength; ++j)
@@ -80,6 +82,35 @@ void Board::SetPacmanDirection(int x, int y)
 	}
 	xPacmanFutureDirection = x;
 	yPacmanFutureDirection = y;
+	newDirectionSteps = 0;
+}
+
+void Board::HandlePacmanOnNewField()
+{
+	auto x = xPacmanOffset / upScaleFactor;
+	auto y = yPacmanOffset / upScaleFactor;
+	auto cell = Cells[y][x];
+	if (cell.GetType() == Tunnel)
+	{
+		auto xTunnel1 = 0;
+		while (Cells[y][xTunnel1].GetType() != Tunnel) ++xTunnel1;
+		auto xTunnel2 = xTunnel1 + 1;
+		while (Cells[y][xTunnel2].GetType() != Tunnel) ++xTunnel2;
+		xPacmanOffset = (x == xTunnel1 ? xTunnel2 : xTunnel1) * upScaleFactor;
+	}
+	switch (cell.GetFloorContentType())
+	{
+	case Empty: break;
+	case Bait:
+		score += baitPoints;
+		break;
+	case SpecialBait:
+		score += specialBaitPoints;
+		break;
+	default: break;
+	}
+	cell.SetFloorContentType(Empty);
+	Cells[y][x] = cell;
 }
 
 void Board::MovePacman()
@@ -103,6 +134,11 @@ void Board::MovePacman()
 			yPacmanDirection = yPacmanFutureDirection;
 		}
 	}
+	if (++newDirectionSteps == newDirectionTimeoutSteps)
+	{
+		xPacmanFutureDirection = xPacmanDirection;
+		yPacmanFutureDirection = yPacmanDirection;
+	}
 	auto& nextCell
 		= GetNextCell(moveOffset, xPacmanOffset, yPacmanOffset, xPacmanDirection, yPacmanDirection);
 	switch (nextCell.GetType())
@@ -117,4 +153,28 @@ void Board::MovePacman()
 	case GhostDoor: break;
 	default: break;
 	}
+	if (xPacmanOffset % upScaleFactor == 0 && yPacmanOffset % upScaleFactor == 0)
+	{
+		HandlePacmanOnNewField();
+	}
+}
+
+long Board::GetScore() const
+{
+	return score;
+}
+
+bool Board::IsGameEnd() const
+{
+	for (auto x = 0; x < XLength; x++)
+	{
+		for (auto y = 0; y < YLength; y++)
+		{
+			if (Cells[y][x].GetFloorContentType() != Empty)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }

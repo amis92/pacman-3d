@@ -90,6 +90,7 @@ void Game::Init(int* argcp, char** argv)
 void Game::Display()
 {
 	static auto frameNo = 0;
+	static auto endGameFrames = 0;
 	if (frameNo < 360) frameNo++; else frameNo = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -99,7 +100,16 @@ void Game::Display()
 		RecalculateCameraArc(frameNo);
 		PositionCamera();
 		PointLight(-30, 30, 30, 0.2, 1.0, 0.0, GL_LIGHT0);
-		board.MovePacman();
+		auto gameEnded = board.IsGameEnd();
+		if (!gameEnded)
+		{
+			board.MovePacman();
+		}
+		else if (++endGameFrames == maxEndGameFrames)
+		{
+			board = Board(board.GetScore());
+			endGameFrames = 0;
+		}
 		BoardDrawer drawer(board, textures);
 		drawer.Draw(frameNo);
 		glPopMatrix();

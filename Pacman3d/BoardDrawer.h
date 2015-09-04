@@ -12,9 +12,12 @@ class BoardDrawer
 	GLuint textures[Game::TexturesSize];
 
 	void DrawFloorTexture(const int floorTextureIndex) const;
+	void DrawBait() const;
+	void DrawSpecialBait() const;
 	void DrawFloor(const BoardCell& boardCell) const;
 	void DrawWall(const BoardCell& boardCell) const;
 	void DrawBoardCell(const BoardCell& boardCell) const;
+	void DrawScore() const;
 	void DrawBoard() const;
 	void DrawWallStraightSeg(bool vertical) const;
 	void DrawWallEdgeSeg(const WallEdgeType wallEdgeType) const;

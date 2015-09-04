@@ -15,6 +15,7 @@ public:
 	static const int WallTextureIndex = 2;
 	static const int WallFloorTextureIndex = 3;
 	const double AmbientLightingValue = 0.5;
+	static const int maxEndGameFrames = 60;
 	static const double maxCameraArc;
 private:
 	static double cameraArc;

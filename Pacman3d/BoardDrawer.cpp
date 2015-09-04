@@ -87,9 +87,34 @@ void BoardDrawer::DrawFloorTexture(const int floorTextureIndex) const
 	glPopMatrix();
 }
 
+void BoardDrawer::DrawBait() const
+{
+	glPushMatrix();
+	glutSolidSphere(.2, 24, 10);
+	glPopMatrix();
+}
+
+void BoardDrawer::DrawSpecialBait() const
+{
+	glPushMatrix();
+	glutSolidSphere(.35, 24, 10);
+	glPopMatrix();
+}
+
 void BoardDrawer::DrawFloor(const BoardCell& boardCell) const
 {
 	DrawFloorTexture(Game::FloorTextureIndex);
+	switch (boardCell.GetFloorContentType())
+	{
+	case Empty: break;
+	case Bait:
+		DrawBait();
+		break;
+	case SpecialBait:
+		DrawSpecialBait();
+		break;
+	default: break;
+	}
 }
 
 void BoardDrawer::DrawWall(const BoardCell& boardCell) const
@@ -124,11 +149,53 @@ void BoardDrawer::DrawBoardCell(const BoardCell& boardCell) const
 	glPopMatrix();
 }
 
+void BoardDrawer::DrawScore() const
+{
+	glPushMatrix();
+	auto score = board.GetScore();
+	auto chars = score == 0 ? 0 : 10;
+	auto i = 1000000000;
+	while (chars > 0 && score / i % 10 == 0)
+	{
+		i /= 10;
+		chars--;
+	}
+	chars = chars == 0 ? 1 : chars;
+	glTranslated(14.5 - double(chars)/2.0, -32.5, 1.0);
+	glScaled(0.01, 0.01, 0.01);
+	if (score == 0)
+	{
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, '0');
+		glTranslatef(0.5, 0.0, 0.0);
+	}
+	else
+	{
+		long x = 10000;
+		while (score > 0 && score / x % 10 == 0)
+		{
+			x /= 10;
+		}
+		for (; x > 0; x /= 10)
+		{
+			glutStrokeCharacter(GLUT_STROKE_ROMAN, score / x % 10 + '0');
+			glTranslatef(0.5, 0.0, 0.0);
+		}
+	}
+	//glutStrokeCharacter(GLUT_STROKE_ROMAN, score / 1000 % 10 + '0');
+	//glTranslatef(0.5, 0.0, 0.0);
+	//glutStrokeCharacter(GLUT_STROKE_ROMAN, score / 100 % 10 + '0');
+	//glTranslatef(0.5, 0.0, 0.0);
+	//glutStrokeCharacter(GLUT_STROKE_ROMAN, score / 10 % 10 + '0');
+	//glTranslatef(0.5, 0.0, 0.0);
+	//glutStrokeCharacter(GLUT_STROKE_ROMAN, score % 10 + '0');
+	glPopMatrix();
+}
+
 void BoardDrawer::DrawBoard() const
 {
 	glPushMatrix();
 
-	GLfloat diffuse[] = {0.7, 0.7, 0.7, 1.0};
+	GLfloat diffuse[] = {0.7f, 0.7f, 0.7f, 1.0f};
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 
 	glTranslatef(-float(Board::XLength) / 2, float(Board::YLength) / 2 - 1, 0.f);
@@ -146,6 +213,7 @@ void BoardDrawer::DrawBoard() const
 		glPopMatrix();
 	}
 	DrawPacman();
+	DrawScore();
 	glPopMatrix();
 }
 
@@ -289,7 +357,7 @@ void BoardDrawer::DrawPacman() const
 {
 	glPushMatrix();
 	glTranslatef(board.GetXPacmanOffset(), -board.GetYPacmanOffset(), 0);
-	GLfloat diffuse[] = {0.7, 0.7, 0.0, 1.0};
+	GLfloat diffuse[] = {0.7f, 0.7f, 0.0f, 1.0f};
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 	glutSolidSphere(.5, 24, 10);
 	glPopMatrix();
