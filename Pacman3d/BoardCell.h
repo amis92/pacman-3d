@@ -43,6 +43,7 @@ class BoardCell
 	static WallEdgeType GetWallEdgeType(const char c);
 	static FloorContentType GetContentType(const char c);
 public:
+	// ReSharper disable once CppNonExplicitConvertingConstructor
 	BoardCell(char c);
 	explicit BoardCell(
 		const ItemType itemType = Floor,

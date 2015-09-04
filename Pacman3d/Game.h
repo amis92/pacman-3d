@@ -20,7 +20,7 @@ private:
 	static double cameraArc;
 	static double cameraRadius;
 	static GLuint textures[TexturesSize];
-	static const Board board;
+	static Board board;
 	static void SetAmbientLighting();
 	static void PointLight(const float x, const float y, const float z,
 	                       const float amb, const float diff, const float spec, const GLenum light);

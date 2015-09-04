@@ -2,6 +2,7 @@
 #include <exception>
 
 static const auto OutOfBoundsError = 0x0001;
+static const auto PacmanDirectionError = 0x0010;
 
 class PacmanException : std::exception
 {

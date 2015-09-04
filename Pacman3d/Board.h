@@ -8,10 +8,14 @@ public:
 	static const int XLength = BoardLayout::Width - 1 /*for string-closing \0*/;
 	static const int YLength = BoardLayout::Height;
 private:
+	static const int upScaleFactor = 100;
+	static const int moveOffset = 5;
 	BoardCell Cells[YLength][XLength];
-	double xPacmanOffset, yPacmanOffset;
+	int xPacmanOffset, yPacmanOffset;
 	int xPacmanDirection, yPacmanDirection;
+	int xPacmanFutureDirection, yPacmanFutureDirection;
 
+	const BoardCell& GetNextCell(int moveOffset, int xOffset, int yOffset, int xDirection, int yDirection) const;
 public:
 	Board();
 	const BoardCell& GetCell(int x, int y) const;
@@ -19,4 +23,9 @@ public:
 	double GetYPacmanOffset() const;
 	double GetXPacmanDirection() const;
 	double GetYPacmanDirection() const;
+
+	// Sets direction for pacman. only 1,0,-1 values are allowed, and at least
+	// one of x,y must be zero.
+	void SetPacmanDirection(int x, int y);
+	void MovePacman();
 };

@@ -7,7 +7,7 @@
 
 GLuint Game::textures[TexturesSize];
 
-const Board Game::board;
+Board Game::board;
 double Game::cameraArc = 0;
 double Game::cameraRadius = 30;
 double const Game::maxCameraArc = M_PI / 12;
@@ -99,6 +99,7 @@ void Game::Display()
 		RecalculateCameraArc(frameNo);
 		PositionCamera();
 		PointLight(-30, 30, 30, 0.2, 1.0, 0.0, GL_LIGHT0);
+		board.MovePacman();
 		BoardDrawer drawer(board, textures);
 		drawer.Draw(frameNo);
 		glPopMatrix();
@@ -130,10 +131,10 @@ void Game::Reshape(int width, int height)
 
 void Game::OnKeyboard(unsigned char key, int x, int y)
 {
-	/*if (key == 'w' && camz > 10.0)
-		camz -= 0.1;
-	else if (key == 's' && camz < 55.0)
-		camz += 0.1;*/
+	if (key == 'w' && cameraRadius > 6.0)
+		cameraRadius -= 1.;
+	else if (key == 's' && cameraRadius < 55.0)
+		cameraRadius += 1.;
 	glutPostRedisplay();
 }
 
@@ -142,19 +143,19 @@ void Game::OnSpecialKeys(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_LEFT:
-		// TODO ruch w lewo
+		board.SetPacmanDirection(-1, 0);
 		break;
 
 	case GLUT_KEY_UP:
-		// TODO ruch w górę
+		board.SetPacmanDirection(0, -1);
 		break;
 
 	case GLUT_KEY_RIGHT:
-		// TODO ruch w prawo
+		board.SetPacmanDirection(1, 0);
 		break;
 
 	case GLUT_KEY_DOWN:
-		// TODO ruch w dół
+		board.SetPacmanDirection(0, 1);
 		break;
 	}
 	glutPostRedisplay();
